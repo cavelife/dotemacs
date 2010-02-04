@@ -1,0 +1,14 @@
+#name : defun test template
+#contributor : oops
+# --
+(defun $1 ()
+  `(current-time-string)`
+  `user-mail-address`
+  (interactive)
+  (let (var1)
+    (setq var1 some)
+    $2
+  )
+)
+
+<img src="$1" class="$2" alt="$3">
