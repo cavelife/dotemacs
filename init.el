@@ -27,8 +27,7 @@
 (global-set-key [(control insert)] 'clipboard-kill-ring-save)
 (global-set-key [(shift insert)] 'clipboard-yank)
 
-; 이늠 어캐쓰는지 잘모르겠음
-(global-set-key "\M-RET" 'slime-fuzzy-complete-symbol)
+(define-key isearch-mode-map (kbd "C-y") 'isearch-yank-kill)
 
 ;; 블럭단위 들여쓰기, 내어쓰기를 단축키로 잡어야하는데 몰라서 못잡고있...
 ;; (global-set-key [(control c) (control ?>)] 'indent-region)
@@ -51,11 +50,14 @@
 ;;;###########################################################################
 ;;; yasnippet
 ;;;###########################################################################
-(add-to-list 'load-path
-             "~/.emacs.d/yasnippet-0.6.1c")
+(add-to-list 'load-path "~/.emacs.d/yasnippet-0.6.1c")
 (require 'yasnippet)
 (yas/initialize)
 (yas/load-directory "~/.emacs.d/yasnippet-0.6.1c/snippets")
+
+;; (add-to-list 'load-path "~/Emacs/zencoding/")
+(require 'zencoding-mode)
+(add-hook 'nxml-mode-hook 'zencoding-mode)
 
 ;;;###########################################################################
 ;;; cperl, perltidy
@@ -70,8 +72,9 @@
 (setq cperl-auto-newline t)
 
 (custom-set-faces
- '(cperl-array-face ((t (:foreground "green" :weight bold))))
- '(cperl-hash-face ((t (:foreground "Red" :slant italic :weight bold)))))
+;;  '(cperl-array-face ((t (:foreground "green" :weight bold))))
+;;  '(cperl-hash-face ((t (:foreground "Red" :slant italic :weight bold)))))
+'(cperl-invalid ((t (:background "red" :foreground "white")))))
 
 (require 'perltidy)
 (defun perltidy-region ()
@@ -104,9 +107,11 @@
 (set-language-environment "UTF-8")
 (setq slime-net-coding-system 'utf-8-unix)
 
-; ftp://ftp.lispworks.com/pub/software_tools/reference/HyperSpec-7-0.tar.gz
-(setq common-lisp-hyperspec-root "~/.emacs.d/HyperSpec/"
-      browse-url-browser-function 'w3m-browse-url)
+;; (define-key slime-mode-map (kbd "A-e") 'slime-eval-last-expression)
+(define-key slime-mode-map (kbd "TAB") 'slime-indent-and-complete-symbol)
+;; (define-key slime-mode-map (kbd "M-TAB") 'slime-fuzzy-complete-symbol)
+;; (define-key slime-repl-mode-map (kbd "M-TAB") 'slime-fuzzy-complete-symbol)
+;; (define-key slime-repl-mode-map (kbd "C-l") 'slime-repl-clear-buffer)
 
 (show-paren-mode t)
 (setq show-paren-delay 0)
@@ -114,6 +119,11 @@
 (set-face-background 'show-paren-match-face "#003333")
 (set-face-attribute 'show-paren-match-face nil
         :weight 'bold :underline nil :overline nil :slant 'normal)
+
+; ftp://ftp.lispworks.com/pub/software_tools/reference/HyperSpec-7-0.tar.gz
+(setq common-lisp-hyperspec-root "~/.emacs.d/HyperSpec/"
+      browse-url-browser-function 'w3m-browse-url)
+(require 'w3m)
 
 ;;;###########################################################################
 ;;; 버퍼이동 ido-mode
@@ -153,9 +163,11 @@
 ;;;##########################################################################
 (load-file "~/.emacs.d/themes/color-theme-sunburst.el")
 (load-file "~/.emacs.d/themes/color-theme-inkpot.el")
+(load-file "~/.emacs.d/themes/color-theme-cavelife.el")
 (require 'color-theme)
 (setq color-theme-is-global t)
-(color-theme-tm)
+;; (color-theme-tm)
+(color-theme-cavelife)
 ;; (color-theme-inkpot)
 ;;;###########################################################################
 ;;; 잡스런 함수들
@@ -197,11 +209,13 @@
 (setq inhibit-startup-message t)          ;; 초기화면 닥침
 (setq initial-scratch-message nil)        ;; 스크래치 깨끗
 (setq-default scroll-step 1)              ;;
-(setq-default show-trailing-whitespace t) ;; 줄끝 공백 보여주기
+(setq scroll-conservatively 50)
+;; (which-function-mode 1)
+
 (setq require-final-newline t)            ;; end files with a newline
 (setq make-backup-files nil)              ;; 백업파일 미생성
 (setq auto-save-default nil)              ;; stop creating those #auto-save# files
-(setq indicate-empty-lines t)             ;; vi의 접근하지 않은 영역의 ~ 비슷한 효과 출력
+;; (setq indicate-empty-lines t)             ;;
 (setq next-line-add-newlines nil)         ;; C-k 후 C-y 했을때 개행처리
 (setq kill-whole-line t)                  ;; C-k시 개행까지 삭제
 (setq display-time-day-and-date t         ;; status-bar의 시간포맷
@@ -210,9 +224,13 @@
   (list '(buffer-file-name "%f" "%b")))
 (setq icon-title-format frame-title-format)
 
-; (font-lock-mode 'font)                    ;; (global-font-lock-mode t) 이것과 치이점 알수없음
+(size-indication-mode t)                        ;; status-bar에 파일 사이즈 출력
+(setq-default indicate-buffer-boundaries 'left	;; margin의 파일의 시작과 끝 등등 출력
+              indicate-empty-lines t	;; vi의 접근하지 않은 영역의 ~ 비슷한 효과 출력
+              show-trailing-whitespace t)       ;; 줄끝 공백 보여주기
 
-(require 'w3m)
+
+
 
 (global-unset-key [(control v)])
 ;; (require 'dokuwiki)
